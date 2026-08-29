@@ -1,4 +1,5 @@
 package com.rohit.ledgerpay.entity;
+
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
@@ -6,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity 
+@Entity
 @Table(name = "users")
 @Data
 @NoArgsConstructor
@@ -19,7 +20,7 @@ public class User {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(nullable = false,  unique = true, length = 150)
+    @Column(nullable = false, unique = true, length = 150)
     private String email;
 
     @Column(nullable = false)
@@ -29,7 +30,7 @@ public class User {
     private LocalDateTime createdAt;
 
     @PrePersist
-    protected void onCreate(){
+    protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
 
