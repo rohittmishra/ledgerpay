@@ -7,6 +7,8 @@ import com.rohit.ledgerpay.dto.RegisterRequest;
 import com.rohit.ledgerpay.entity.User;
 import com.rohit.ledgerpay.service.UserService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -18,7 +20,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<User> register(@Valid @RequestBody RegisterRequest request) {
         User savedUser = userService.registerUser(
             request.getName(),
             request.getEmail(),
