@@ -64,4 +64,31 @@ public class TransactionService {
 
         return transaction;
     }
+
+    @Transactional
+    public Transaction deposit(Long accountId, BigDecimal amount) {
+
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Deposit amount must be positive");
+        }
+
+        Account account = accountRepository.findByIdForUpdate(accountId)
+                .orElseThrow(() -> new IllegalArgumentException("Account not found: " + accountId));
+
+        Transaction transaction = new Transaction();
+        transaction.setFromAccount(null);
+        transaction.setToAccount(account);
+        transaction.setAmount(amount);
+        transaction.setType("DEPOSIT");
+        transaction.setStatus("PENDING");
+        transactionRepository.save(transaction);
+
+        account.setBalance(account.getBalance().add(amount));
+        accountRepository.save(account);
+
+        transaction.setStatus("SUCCESS");
+        transactionRepository.save(transaction);
+
+        return transaction;
+    }
 }

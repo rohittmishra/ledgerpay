@@ -1,13 +1,12 @@
 package com.rohit.ledgerpay.controller;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import com.rohit.ledgerpay.dto.RegisterRequest;
+import com.rohit.ledgerpay.dto.UserResponse;
 import com.rohit.ledgerpay.entity.User;
 import com.rohit.ledgerpay.service.UserService;
-
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -20,12 +19,12 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request) {
         User savedUser = userService.registerUser(
-            request.getName(),
-            request.getEmail(),
-            request.getPassword()
+                request.getName(),
+                request.getEmail(),
+                request.getPassword()
         );
-        return ResponseEntity.ok(savedUser);
+        return ResponseEntity.ok(new UserResponse(savedUser));
     }
 }
