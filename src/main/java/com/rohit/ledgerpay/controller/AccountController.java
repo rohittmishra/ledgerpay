@@ -5,6 +5,7 @@ import com.rohit.ledgerpay.dto.OpenAccountRequest;
 import com.rohit.ledgerpay.entity.Account;
 import com.rohit.ledgerpay.entity.User;
 import com.rohit.ledgerpay.repository.UserRepository;
+import com.rohit.ledgerpay.security.SecurityUtil;
 import com.rohit.ledgerpay.service.AccountService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -27,17 +28,19 @@ public class AccountController {
 
     @PostMapping("/open")
     public ResponseEntity<AccountResponse> openAccount(@Valid @RequestBody OpenAccountRequest request) {
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("User not found: " + request.getUserId()));
+        Long currentUserId = SecurityUtil.getCurrentUserId();
+        User user = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + currentUserId));
 
         Account account = accountService.openAccount(user, request.getAccountType());
         return ResponseEntity.ok(new AccountResponse(account));
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<AccountResponse>> getAccountsForUser(@PathVariable Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
+    @GetMapping("/my-accounts")
+    public ResponseEntity<List<AccountResponse>> getMyAccounts() {
+        Long currentUserId = SecurityUtil.getCurrentUserId();
+        User user = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + currentUserId));
 
         List<Account> accounts = accountService.getAccountsForUser(user);
         List<AccountResponse> response = accounts.stream()

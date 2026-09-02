@@ -7,6 +7,7 @@ import com.rohit.ledgerpay.entity.Account;
 import com.rohit.ledgerpay.entity.Transaction;
 import com.rohit.ledgerpay.repository.AccountRepository;
 import com.rohit.ledgerpay.repository.TransactionRepository;
+import com.rohit.ledgerpay.security.SecurityUtil;
 import com.rohit.ledgerpay.service.TransactionService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +25,8 @@ public class TransactionController {
     private final TransactionRepository transactionRepository;
 
     public TransactionController(TransactionService transactionService,
-                                  AccountRepository accountRepository,
-                                  TransactionRepository transactionRepository) {
+            AccountRepository accountRepository,
+            TransactionRepository transactionRepository) {
         this.transactionService = transactionService;
         this.accountRepository = accountRepository;
         this.transactionRepository = transactionRepository;
@@ -33,11 +34,19 @@ public class TransactionController {
 
     @PostMapping("/transfer")
     public ResponseEntity<TransactionResponse> transfer(@Valid @RequestBody TransferRequest request) {
+        Long currentUserId = SecurityUtil.getCurrentUserId();
+
+        Account fromAccount = accountRepository.findById(request.getFromAccountId())
+                .orElseThrow(() -> new IllegalArgumentException("Account not found: " + request.getFromAccountId()));
+
+        if (!fromAccount.getUser().getId().equals(currentUserId)) {
+            throw new IllegalArgumentException("You do not have permission to transfer from this account");
+        }
+
         Transaction transaction = transactionService.transferMoney(
                 request.getFromAccountId(),
                 request.getToAccountId(),
-                request.getAmount()
-        );
+                request.getAmount());
         return ResponseEntity.ok(new TransactionResponse(transaction));
     }
 
@@ -49,8 +58,14 @@ public class TransactionController {
 
     @GetMapping("/account/{accountId}")
     public ResponseEntity<List<TransactionResponse>> getHistory(@PathVariable Long accountId) {
+        Long currentUserId = SecurityUtil.getCurrentUserId();
+
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new IllegalArgumentException("Account not found: " + accountId));
+
+        if (!account.getUser().getId().equals(currentUserId)) {
+            throw new IllegalArgumentException("You do not have permission to view this account's history");
+        }
 
         List<Transaction> history = transactionRepository.findByFromAccountOrToAccount(account, account);
         List<TransactionResponse> response = history.stream()
