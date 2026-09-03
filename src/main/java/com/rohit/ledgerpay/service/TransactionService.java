@@ -4,6 +4,9 @@ import com.rohit.ledgerpay.entity.Account;
 import com.rohit.ledgerpay.entity.Transaction;
 import com.rohit.ledgerpay.repository.AccountRepository;
 import com.rohit.ledgerpay.repository.TransactionRepository;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +17,7 @@ public class TransactionService {
 
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
+    private static final Logger logger = LoggerFactory.getLogger(TransactionService.class);
 
     public TransactionService(AccountRepository accountRepository, TransactionRepository transactionRepository) {
         this.accountRepository = accountRepository;
@@ -22,6 +26,8 @@ public class TransactionService {
 
     @Transactional
     public Transaction transferMoney(Long fromAccountId, Long toAccountId, BigDecimal amount) {
+
+        logger.info("Transfer initiated: from={}, to={}, amount={}", fromAccountId, toAccountId, amount);
 
         if (fromAccountId.equals(toAccountId)) {
             throw new IllegalArgumentException("Cannot transfer to the same account");
@@ -43,6 +49,8 @@ public class TransactionService {
         Account toAccount = firstLockId.equals(toAccountId) ? firstLocked : secondLocked;
 
         if (fromAccount.getBalance().compareTo(amount) < 0) {
+            logger.warn("Transfer failed - insufficient balance: account={}, balance={}, requested={}",
+                    fromAccount.getAccountNumber(), fromAccount.getBalance(), amount);
             throw new IllegalStateException("Insufficient balance in account " + fromAccount.getAccountNumber());
         }
 
@@ -61,6 +69,9 @@ public class TransactionService {
 
         transaction.setStatus("SUCCESS");
         transactionRepository.save(transaction);
+
+        logger.info("Transfer completed successfully: transactionId={}, from={}, to={}, amount={}",
+                transaction.getId(), fromAccountId, toAccountId, amount);
 
         return transaction;
     }
