@@ -2,7 +2,7 @@
 
 A mini banking backend built with Spring Boot — user accounts, fund transfers, deposits, and full transaction history, with JWT authentication and concurrency-safe money movement.
 
-Built as a hands-on project to go from Java fundamentals to a defensible, interview-ready backend, with a focus on the kind of correctness and safety concerns real financial systems care about — not just CRUD.
+Built as a hands-on project to go from Java fundamentals to a defensible, interview-ready backend, with a focus on the kind of correctness and safety concerns real financial systems care about.
 Try it live: https://tinyurl.com/ledgerpay
 
 ## Features
