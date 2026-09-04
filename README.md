@@ -3,6 +3,7 @@
 A mini banking backend built with Spring Boot — user accounts, fund transfers, deposits, and full transaction history, with JWT authentication and concurrency-safe money movement.
 
 Built as a hands-on project to go from Java fundamentals to a defensible, interview-ready backend, with a focus on the kind of correctness and safety concerns real financial systems care about — not just CRUD.
+Try it live: https://tinyurl.com/ledgerpay
 
 ## Features
 
@@ -39,3 +40,13 @@ Standard layered architecture: controllers handle HTTP concerns only, services h
 | POST | `/api/transactions/deposit` | Deposit into an account (auth required) |
 | POST | `/api/transactions/transfer` | Transfer between accounts (auth required) |
 | GET | `/api/transactions/account/{accountId}` | View transaction history (auth required) |
+
+## Running it yourself
+
+```bash
+git clone https://github.com/rohittmishra/ledgerpay.git
+cd ledgerpay
+docker compose up
+```
+
+You'll need a `.env` file with `DB_PASSWORD` and `JWT_SECRET` set first. Then it's up at `localhost:8080/swagger-ui/index.html`.
