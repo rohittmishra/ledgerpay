@@ -1,8 +1,6 @@
 # LedgerPay
 
-A mini banking backend built with Spring Boot — user accounts, fund transfers, deposits, and full transaction history, with JWT authentication and concurrency-safe money movement.
-
-Built as a hands-on project to go from Java fundamentals to a defensible, interview-ready backend, with a focus on the kind of correctness and safety concerns real financial systems care about.
+LedgerPay is a Spring Boot-based banking REST API providing user authentication, account management, deposits, balance inquiries, and account-to-account fund transfers. It uses MySQL for persistence, JWT for API security, and Docker for containerization, and is deployed on Render.
 Try it live: https://tinyurl.com/ledgerpay
 
 ## Features
