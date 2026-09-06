@@ -1,6 +1,6 @@
 # LedgerPay
 
-LedgerPay is a Spring Boot-based banking REST API providing user authentication, account management, deposits, balance inquiries, and account-to-account fund transfers. It uses MySQL for persistence, JWT for API security, and Docker for containerization, and is deployed on Render.
+LedgerPay is a Spring Boot-based banking REST API providing user authentication, account management, deposits, balance inquiries, and account-to-account fund transfers. It uses MySQL for persistence, JWT for API security, and Docker for containerization.
 Try it live: https://tinyurl.com/ledgerpay
 
 ## Features
